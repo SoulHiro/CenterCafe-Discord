@@ -3,12 +3,16 @@ import { config } from "../config";
 import * as ping from "./ping";
 import * as updateCommands from "./update-commands";
 import * as welcomePreview from "./welcome-preview";
+import * as clear from "./clear";
+import * as ticTacToe from "./tic-tac-toe";
 
 // Definindo comandos diretamente aqui para evitar dependência circular
 const commands = {
   ping,
   "update-commands": updateCommands,
   "welcome-preview": welcomePreview,
+  clear,
+  "jogo-da-velha": ticTacToe,
 };
 
 const commandsData = Object.values(commands).map((command) => command.data.toJSON());

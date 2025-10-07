@@ -1,6 +1,7 @@
 import { Client, TextChannel } from "discord.js";
 import { config } from "../config";
 import { goodMorningMessages } from "./messages/good-morning";
+import { goodEveningMessages } from "./messages/good-evening";
 import { goodNightMessages } from "./messages/good-night";
 import { nightRandomMessages } from "./messages/night-random";
 import { dayRandomMessages } from "./messages/day-random";
@@ -49,8 +50,17 @@ export function startScheduledMessages(client: Client) {
     }, 24 * 60 * 60 * 1000);
   }, morningDelay);
 
-  // Boa noite às 18:00
-  const goodNightDelay = msUntilNext(18, 0);
+  // Boa noite de chegada às 18:00
+  const goodEveningDelay = msUntilNext(18, 0);
+  setTimeout(async () => {
+    await sendToBroadcast(client, pick(goodEveningMessages));
+    setInterval(() => {
+      sendToBroadcast(client, pick(goodEveningMessages));
+    }, 24 * 60 * 60 * 1000);
+  }, goodEveningDelay);
+
+  // Boa noite para dormir às 23:00
+  const goodNightDelay = msUntilNext(23, 0);
   setTimeout(async () => {
     await sendToBroadcast(client, pick(goodNightMessages));
     setInterval(() => {
@@ -85,7 +95,7 @@ function scheduleDayWindowMessages(client: Client) {
   const start = new Date(now);
   start.setHours(8, 0, 0, 0); // janela começa às 08:00
   const end = new Date(now);
-  end.setHours(18, 0, 0, 0); // janela termina às 18:00
+  end.setHours(17, 30, 0, 0); // janela termina às 17:30 (antes da boa noite de chegada)
 
   // Se já passou do fim da janela, não agenda nada para hoje
   if (now >= end) return;

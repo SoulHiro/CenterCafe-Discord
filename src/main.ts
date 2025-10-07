@@ -10,6 +10,7 @@ import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./commands/deploy-commands";
 import { handleGuildMemberAdd, handleMention, startScheduledMessages, handleKeywordResponder } from "./events";
+import { handleTicTacToeButton } from "./commands/tic-tac-toe";
 import { Logger } from "./utils/logger";
 import { EmbedUtils } from "./utils/embeds";
 
@@ -137,6 +138,12 @@ client.on("messageCreate", handleMention);
 client.on("messageCreate", handleKeywordResponder);
 
 client.on("interactionCreate", async (interaction) => {
+  // Manipular botões do jogo da velha
+  if (interaction.isButton() && interaction.customId.startsWith('ttt_')) {
+    await handleTicTacToeButton(interaction);
+    return;
+  }
+
   if (!interaction.isCommand()) {
     return;
   }
@@ -146,7 +153,9 @@ client.on("interactionCreate", async (interaction) => {
 
   if (commands[commandName as keyof typeof commands]) {
     try {
-      await commands[commandName as keyof typeof commands].execute(interaction);
+      if (interaction.isChatInputCommand()) {
+        await commands[commandName as keyof typeof commands].execute(interaction);
+      }
     } catch (error) {
       Logger.error(`Erro ao executar comando ${commandName}: ${error}`);
     }
