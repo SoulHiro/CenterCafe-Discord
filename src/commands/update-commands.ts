@@ -19,6 +19,16 @@ export async function execute(interaction: CommandInteraction) {
       return;
     }
 
+    // Restrição adicional em tempo de execução: somente administradores
+    const hasAdmin = interaction.memberPermissions?.has(PermissionFlagsBits.Administrator);
+    if (!hasAdmin) {
+      const errorEmbed = EmbedUtils.createErrorEmbed(
+        'Você precisa ser administrador para usar este comando.'
+      );
+      await interaction.editReply({ embeds: [errorEmbed] });
+      return;
+    }
+
     // Definindo comandos localmente para evitar dependência circular
     const commands = {
       ping,

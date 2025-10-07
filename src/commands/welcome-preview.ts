@@ -1,9 +1,10 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 import { EmbedUtils } from "../utils/embeds";
 
 export const data = new SlashCommandBuilder()
   .setName("welcome-preview")
   .setDescription("Visualiza o embed de boas-vindas")
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addUserOption((option) =>
     option
       .setName("usuario")
@@ -16,6 +17,18 @@ export async function execute(interaction: CommandInteraction) {
     if (!interaction.guild) {
       const errorEmbed = EmbedUtils.createErrorEmbed(
         "Este comando só pode ser usado em servidores!"
+      );
+      await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+      return;
+    }
+
+    // Restrição adicional em tempo de execução: somente administradores
+    const hasAdmin = interaction.memberPermissions?.has(
+      PermissionFlagsBits.Administrator
+    );
+    if (!hasAdmin) {
+      const errorEmbed = EmbedUtils.createErrorEmbed(
+        "Você precisa ser administrador para usar este comando."
       );
       await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       return;
