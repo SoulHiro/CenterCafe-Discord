@@ -63,6 +63,15 @@ export async function handleMention(message: Message) {
     const isMentioned = message.mentions.users.has(botId);
     if (!isMentioned) return;
 
+    // O handler de menção só deve responder quando a menção ao bot for isolada,
+    // sem outras palavras/frases. Se houver conteúdo adicional, delega para outros handlers.
+    const contentWithoutBot = message.content
+      .replace(new RegExp(`<@!?${botId}>`, "g"), "")
+      .trim();
+    if (contentWithoutBot.length > 0) {
+      return;
+    }
+
     const userId = message.author.id;
     const now = Date.now();
     const state = mentionState.get(userId);

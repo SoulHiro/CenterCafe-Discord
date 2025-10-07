@@ -37,6 +37,12 @@ const replies = {
     "☕ Bom dia! Café servido, {name}. Energia lá em cima!",
     "📈 Bom dia, {name}! Qual sua meta de hoje?",
   ],
+  mentionMorning: [
+    "☀️☕ BOM DIA, {name}! QUE ENERGIA! VAMOS FAZER DESSE DIA O MELHOR! 🚀",
+    "🌞 BOM DIA, {name}! CAFÉ NA MÃO, SORRISO NO ROSTO — VAMOS COM TUDO!!!",
+    "🔥 BOM DIA, {name}! PARTIU PRODUTIVIDADE MÁXIMA!",
+    "💥 BOM DIA, {name}! HOJE É DIA DE ARRASAR!",
+  ],
   afternoon: [
     "🌤️ Boa tarde, {name}! Como está sendo o dia por aí?",
     "🍪 Boa tarde! Pausa com café e seguimos, {name}.",
@@ -48,6 +54,12 @@ const replies = {
     "✨ Boa noite! Que as horas sejam tranquilas, {name}.",
     "😴 Boa noite, {name}! Amanhã tem mais papos e café.",
     "🧣 Boa noite! Um bom descanso faz milagres, {name}.",
+  ],
+  mentionNight: [
+    "🌙✨ BOA NOITE, {name}! DESCANSA COM ALEGRIA! 💤",
+    "⭐ BOA NOITE, {name}! QUE A NOITE SEJA SERENA E ESPECIAL!",
+    "💫 BOA NOITE, {name}! FECHANDO O DIA COM MUITA GOOD VIBES!",
+    "🌌 BOA NOITE, {name}! AMANHÃ TEM MAIS CAFÉ E PAPO!",
   ],
   madrugada: [
     "🌌 Boa madrugada, {name}! Lembre de descansar quando puder.",
@@ -82,8 +94,7 @@ export async function handleKeywordResponder(message: Message) {
     const botId = message.client.user?.id;
     if (!botId) return;
 
-    // Se mencionou o bot, deixa o outro handler cuidar
-    if (message.mentions.users.has(botId)) return;
+    const isMentioningBot = message.mentions.users.has(botId);
 
     const now = Date.now();
     const last = userCooldown.get(message.author.id) ?? 0;
@@ -92,11 +103,21 @@ export async function handleKeywordResponder(message: Message) {
     const content = normalize(message.content);
 
     let category: keyof typeof replies | null = null;
-    if (patterns.morning.some((r) => r.test(content))) category = "morning";
-    else if (patterns.afternoon.some((r) => r.test(content))) category = "afternoon";
-    else if (patterns.night.some((r) => r.test(content))) category = "night";
-    else if (patterns.madrugada.some((r) => r.test(content))) category = "madrugada";
-    else if (patterns.random.some((r) => r.test(content))) category = "random";
+    const hasMorning = patterns.morning.some((r) => r.test(content));
+    const hasNight = patterns.night.some((r) => r.test(content));
+
+    // Caso especial: menção ao bot junto de "bom dia" ou "boa noite" → entusiasmo máximo
+    if (isMentioningBot && (hasMorning || hasNight)) {
+      category = hasMorning ? "mentionMorning" : "mentionNight";
+    } else {
+      // Se mencionou o bot sem saudação específica, evitar conflito com mentioned-event
+      if (isMentioningBot) return;
+      if (hasMorning) category = "morning";
+      else if (patterns.afternoon.some((r) => r.test(content))) category = "afternoon";
+      else if (hasNight) category = "night";
+      else if (patterns.madrugada.some((r) => r.test(content))) category = "madrugada";
+      else if (patterns.random.some((r) => r.test(content))) category = "random";
+    }
 
     if (!category) return;
 
