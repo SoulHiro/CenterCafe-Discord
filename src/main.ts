@@ -9,7 +9,7 @@ import {
 import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./commands/deploy-commands";
-import { handleGuildMemberAdd, handleMention, startScheduledMessages } from "./events";
+import { handleGuildMemberAdd, handleMention, startScheduledMessages, handleKeywordResponder } from "./events";
 import { Logger } from "./utils/logger";
 import { EmbedUtils } from "./utils/embeds";
 
@@ -134,6 +134,7 @@ client.on("guildDelete", async () => {
 
 client.on("guildMemberAdd", handleGuildMemberAdd);
 client.on("messageCreate", handleMention);
+client.on("messageCreate", handleKeywordResponder);
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) {
