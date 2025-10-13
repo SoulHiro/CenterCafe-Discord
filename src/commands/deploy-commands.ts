@@ -8,6 +8,7 @@ import * as ticTacToe from "./tic-tac-toe";
 import * as avatar from "./avatar";
 import * as serverinfo from "./serverinfo";
 import * as userinfo from "./userinfo";
+import * as antiraid from "./antiraid";
 
 // Definindo comandos diretamente aqui para evitar dependência circular
 const commands = {
@@ -19,6 +20,7 @@ const commands = {
   avatar,
   serverinfo,
   userinfo,
+  antiraid,
 };
 
 const commandsData = Object.values(commands).map((command) => command.data.toJSON());

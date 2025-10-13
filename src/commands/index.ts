@@ -6,6 +6,7 @@ import * as ticTacToe from "./tic-tac-toe";
 import * as avatar from "./avatar";
 import * as serverinfo from "./serverinfo";
 import * as userinfo from "./userinfo";
+import * as antiraid from "./antiraid";
 
 export const commands = {
   ping,
@@ -16,4 +17,5 @@ export const commands = {
   avatar,
   serverinfo,
   userinfo,
+  antiraid,
 };
