@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  EmbedBuilder,
 } from "discord.js";
 import { config } from "./config";
 import { commands } from "./commands";
@@ -56,7 +57,7 @@ client.once("ready", async () => {
     "send" in channel &&
     shouldSendStartup
   ) {
-    const startupEmbed = EmbedUtils.createStartupEmbed();
+    const startupEmbed = EmbedUtils.createStartupEmbed(client);
     // Botões interativos (se aplicável)
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       // new ButtonBuilder()
@@ -66,7 +67,17 @@ client.once("ready", async () => {
       new ButtonBuilder()
         .setLabel("📣 Servidor de Suporte")
         .setStyle(ButtonStyle.Link)
-        .setURL(config.SUPPORT_SERVER_URL ?? "https://discord.com")
+        .setURL(config.SUPPORT_SERVER_URL ?? "https://discord.com"),
+      new ButtonBuilder()
+        .setLabel("🎮 Comandos Disponíveis")
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId("show_commands")
+        .setEmoji("📋"),
+      new ButtonBuilder()
+        .setLabel("🛡️ Sistema Anti-Raid")
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId("antiraid_info")
+        .setEmoji("🔒")
     );
 
     await channel.send({ embeds: [startupEmbed], components: [row] });
@@ -142,6 +153,82 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isButton() && interaction.customId.startsWith('ttt_')) {
     await handleTicTacToeButton(interaction);
     return;
+  }
+
+  // Manipular botões da mensagem de inicialização
+  if (interaction.isButton()) {
+    if (interaction.customId === 'show_commands') {
+      const commandsEmbed = new EmbedBuilder()
+        .setTitle("📋 Lista Completa de Comandos")
+        .setDescription("Aqui estão todos os comandos disponíveis no Center Café Bot:")
+        .setColor(0x8B4513)
+        .addFields(
+          {
+            name: "🎮 Entretenimento",
+            value: "`/jogo-da-velha` - Inicie uma partida de jogo da velha\n`/ping` - Verifique a latência do bot",
+            inline: false
+          },
+          {
+            name: "👤 Informações de Usuários",
+            value: "`/avatar [usuário]` - Visualize o avatar de um usuário\n`/userinfo [usuário]` - Informações detalhadas do usuário",
+            inline: false
+          },
+          {
+            name: "🏠 Informações do Servidor",
+            value: "`/serverinfo` - Estatísticas completas do servidor",
+            inline: false
+          },
+          {
+            name: "🛡️ Moderação & Segurança",
+            value: "`/antiraid` - Gerenciar sistema anti-raid\n`/clear [quantidade]` - Limpar mensagens (moderadores)",
+            inline: false
+          },
+          {
+            name: "⚙️ Administração",
+            value: "`/update-commands` - Atualizar comandos slash (admin)\n`/welcome-preview` - Visualizar mensagem de boas-vindas",
+            inline: false
+          }
+        )
+        .setFooter({ text: "Use / para ver os comandos disponíveis no chat!" })
+        .setTimestamp();
+
+      await interaction.reply({ embeds: [commandsEmbed], ephemeral: true });
+      return;
+    }
+
+    if (interaction.customId === 'antiraid_info') {
+      const antiraidEmbed = new EmbedBuilder()
+        .setTitle("🛡️ Sistema Anti-Raid - Center Café")
+        .setDescription("Nosso sistema de proteção avançado mantém o servidor seguro contra ataques coordenados.")
+        .setColor(0xFF4444)
+        .addFields(
+          {
+            name: "🚨 Detecção Automática",
+            value: "• Monitora entradas rápidas de membros\n• Limite: 5 membros em 5 minutos\n• Ativação automática em caso de suspeita",
+            inline: false
+          },
+          {
+            name: "🔒 Quarentena Inteligente",
+            value: "• Isolamento automático de novos membros suspeitos\n• Remoção de permissões temporária\n• Liberação automática após 10 minutos",
+            inline: false
+          },
+          {
+            name: "📊 Comandos de Gerenciamento",
+            value: "`/antiraid status` - Ver estatísticas atuais\n`/antiraid liberar @usuário` - Remover da quarentena\n`/antiraid verificar @usuário` - Verificar status",
+            inline: false
+          },
+          {
+            name: "📝 Logs Detalhados",
+            value: "Todas as ações são registradas no canal de logs para auditoria completa.",
+            inline: false
+          }
+        )
+        .setFooter({ text: "Sistema desenvolvido para proteger nossa comunidade" })
+        .setTimestamp();
+
+      await interaction.reply({ embeds: [antiraidEmbed], ephemeral: true });
+      return;
+    }
   }
 
   if (!interaction.isCommand()) {

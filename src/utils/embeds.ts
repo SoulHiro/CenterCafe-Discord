@@ -38,26 +38,87 @@ export class EmbedUtils {
       .setTimestamp();
   }
 
-  static createStartupEmbed(): EmbedBuilder {
+  static createStartupEmbed(client?: any): EmbedBuilder {
+    const guildCount = client?.guilds?.cache?.size || 0;
+    const userCount =
+      client?.guilds?.cache?.reduce(
+        (acc: number, guild: any) => acc + guild.memberCount,
+        0
+      ) || 0;
+    const startTime = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
     return new EmbedBuilder()
-      .setTitle("🤖 Center Café Bot - Online!")
+      .setTitle("🤖 Center Café Bot - Sistema Online!")
       .setDescription(
-        "O bot foi iniciado com sucesso e está pronto para servir o melhor café digital! ☕"
+        "☕ **Bem-vindos ao Center Café!** ☕\n\n" +
+          "O bot foi inicializado com sucesso e todos os sistemas estão operacionais. " +
+          "Estou pronto para servir a melhor experiência digital para nossa comunidade!"
       )
-      .setColor(0x00ff00)
+      .setColor(0x8b4513) // Cor marrom café
       .addFields(
-        { name: "⚡ Status", value: "Online e funcionando", inline: true },
-        { name: "🔧 Versão", value: "1.0.0", inline: true },
-        { name: "📊 Sistema", value: "Discord.js v14", inline: true },
         {
-          name: "🎯 Funcionalidades",
+          name: "📊 Estatísticas do Servidor",
+          value: `**Servidores:** ${guildCount}\n**Usuários:** ${userCount.toLocaleString(
+            "pt-BR"
+          )}\n**Status:** 🟢 Online`,
+          inline: true,
+        },
+        {
+          name: "⚙️ Informações Técnicas",
+          value: `**Versão:** 2.0.0\n**Sistema:** Discord.js v14\n**Uptime:** Recém iniciado`,
+          inline: true,
+        },
+        {
+          name: "🕒 Inicialização",
+          value: `**Horário:** ${startTime}\n**Fuso:** UTC-3 (São Paulo)\n**Ambiente:** ${
+            process.env.NODE_ENV || "development"
+          }`,
+          inline: true,
+        },
+        {
+          name: "🎯 Funcionalidades Principais",
           value:
-            "• Boas-vindas automáticas\n• Comandos slash\n• Sistema de cargos\n• Logs detalhados",
+            "🎮 **Entretenimento**\n" +
+            "• Jogo da Velha interativo\n" +
+            "• Sistema de respostas inteligentes\n" +
+            "• Mensagens programadas\n\n" +
+            "🛡️ **Segurança & Moderação**\n" +
+            "• Sistema Anti-Raid avançado\n" +
+            "• Quarentena automática\n" +
+            "• Logs detalhados de atividades\n\n" +
+            "👋 **Gestão de Comunidade**\n" +
+            "• Boas-vindas personalizadas\n" +
+            "• Atribuição automática de cargos\n" +
+            "• Comandos administrativos completos",
+          inline: false,
+        },
+        {
+          name: "📋 Comandos Disponíveis",
+          value:
+            "`/ping` - Verificar latência\n" +
+            "`/avatar` - Visualizar avatar de usuários\n" +
+            "`/userinfo` - Informações detalhadas de usuários\n" +
+            "`/serverinfo` - Estatísticas do servidor\n" +
+            "`/jogo-da-velha` - Iniciar partida interativa\n" +
+            "`/antiraid` - Gerenciar sistema de segurança\n" +
+            "`/clear` - Limpar mensagens (moderadores)\n" +
+            "`/update-commands` - Atualizar comandos (admin)",
           inline: false,
         }
       )
-      .setThumbnail("https://cdn.discordapp.com/emojis/1234567890123456789.png")
-      .setFooter({ text: "Center Café Bot • Desenvolvido com ❤️" })
+      .setThumbnail("https://cdn.discordapp.com/emojis/☕.png") // Emoji de café
+      .setFooter({
+        text: "Center Café Bot • Hello World",
+        iconURL: client?.user?.displayAvatarURL(),
+      })
       .setTimestamp();
   }
 
