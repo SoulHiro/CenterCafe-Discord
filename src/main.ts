@@ -10,7 +10,7 @@ import {
 import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./commands/deploy-commands";
-import { handleGuildMemberAdd, handleMention, startScheduledMessages, handleKeywordResponder } from "./events";
+import { handleGuildMemberAdd } from "./events";
 import { handleTicTacToeButton } from "./commands/tic-tac-toe";
 import { Logger } from "./utils/logger";
 import { EmbedUtils } from "./utils/embeds";
@@ -106,9 +106,6 @@ client.once("ready", async () => {
 
   // Atualiza presença periodicamente
   setInterval(refreshPresence, 5 * 60 * 1000);
-
-  // Inicia o scheduler de mensagens automáticas
-  startScheduledMessages(client);
 });
 
 client.on("guildCreate", async (guild) => {
@@ -145,48 +142,52 @@ client.on("guildDelete", async () => {
 });
 
 client.on("guildMemberAdd", handleGuildMemberAdd);
-client.on("messageCreate", handleMention);
-client.on("messageCreate", handleKeywordResponder);
 
 client.on("interactionCreate", async (interaction) => {
   // Manipular botões do jogo da velha
-  if (interaction.isButton() && interaction.customId.startsWith('ttt_')) {
+  if (interaction.isButton() && interaction.customId.startsWith("ttt_")) {
     await handleTicTacToeButton(interaction);
     return;
   }
 
   // Manipular botões da mensagem de inicialização
   if (interaction.isButton()) {
-    if (interaction.customId === 'show_commands') {
+    if (interaction.customId === "show_commands") {
       const commandsEmbed = new EmbedBuilder()
         .setTitle("📋 Lista Completa de Comandos")
-        .setDescription("Aqui estão todos os comandos disponíveis no Center Café Bot:")
-        .setColor(0x8B4513)
+        .setDescription(
+          "Aqui estão todos os comandos disponíveis no Center Café Bot:"
+        )
+        .setColor(0x8b4513)
         .addFields(
           {
             name: "🎮 Entretenimento",
-            value: "`/jogo-da-velha` - Inicie uma partida de jogo da velha\n`/ping` - Verifique a latência do bot",
-            inline: false
+            value:
+              "`/jogo-da-velha` - Inicie uma partida de jogo da velha\n`/ping` - Verifique a latência do bot",
+            inline: false,
           },
           {
             name: "👤 Informações de Usuários",
-            value: "`/avatar [usuário]` - Visualize o avatar de um usuário\n`/userinfo [usuário]` - Informações detalhadas do usuário",
-            inline: false
+            value:
+              "`/avatar [usuário]` - Visualize o avatar de um usuário\n`/userinfo [usuário]` - Informações detalhadas do usuário",
+            inline: false,
           },
           {
             name: "🏠 Informações do Servidor",
             value: "`/serverinfo` - Estatísticas completas do servidor",
-            inline: false
+            inline: false,
           },
           {
             name: "🛡️ Moderação & Segurança",
-            value: "`/antiraid` - Gerenciar sistema anti-raid\n`/clear [quantidade]` - Limpar mensagens (moderadores)",
-            inline: false
+            value:
+              "`/antiraid` - Gerenciar sistema anti-raid\n`/clear [quantidade]` - Limpar mensagens (moderadores)",
+            inline: false,
           },
           {
             name: "⚙️ Administração",
-            value: "`/update-commands` - Atualizar comandos slash (admin)\n`/welcome-preview` - Visualizar mensagem de boas-vindas",
-            inline: false
+            value:
+              "`/update-commands` - Atualizar comandos slash (admin)\n`/welcome-preview` - Visualizar mensagem de boas-vindas",
+            inline: false,
           }
         )
         .setFooter({ text: "Use / para ver os comandos disponíveis no chat!" })
@@ -196,34 +197,42 @@ client.on("interactionCreate", async (interaction) => {
       return;
     }
 
-    if (interaction.customId === 'antiraid_info') {
+    if (interaction.customId === "antiraid_info") {
       const antiraidEmbed = new EmbedBuilder()
         .setTitle("🛡️ Sistema Anti-Raid - Center Café")
-        .setDescription("Nosso sistema de proteção avançado mantém o servidor seguro contra ataques coordenados.")
-        .setColor(0xFF4444)
+        .setDescription(
+          "Nosso sistema de proteção avançado mantém o servidor seguro contra ataques coordenados."
+        )
+        .setColor(0xff4444)
         .addFields(
           {
             name: "🚨 Detecção Automática",
-            value: "• Monitora entradas rápidas de membros\n• Limite: 5 membros em 5 minutos\n• Ativação automática em caso de suspeita",
-            inline: false
+            value:
+              "• Monitora entradas rápidas de membros\n• Limite: 5 membros em 5 minutos\n• Ativação automática em caso de suspeita",
+            inline: false,
           },
           {
             name: "🔒 Quarentena Inteligente",
-            value: "• Isolamento automático de novos membros suspeitos\n• Remoção de permissões temporária\n• Liberação automática após 10 minutos",
-            inline: false
+            value:
+              "• Isolamento automático de novos membros suspeitos\n• Remoção de permissões temporária\n• Liberação automática após 10 minutos",
+            inline: false,
           },
           {
             name: "📊 Comandos de Gerenciamento",
-            value: "`/antiraid status` - Ver estatísticas atuais\n`/antiraid liberar @usuário` - Remover da quarentena\n`/antiraid verificar @usuário` - Verificar status",
-            inline: false
+            value:
+              "`/antiraid status` - Ver estatísticas atuais\n`/antiraid liberar @usuário` - Remover da quarentena\n`/antiraid verificar @usuário` - Verificar status",
+            inline: false,
           },
           {
             name: "📝 Logs Detalhados",
-            value: "Todas as ações são registradas no canal de logs para auditoria completa.",
-            inline: false
+            value:
+              "Todas as ações são registradas no canal de logs para auditoria completa.",
+            inline: false,
           }
         )
-        .setFooter({ text: "Sistema desenvolvido para proteger nossa comunidade" })
+        .setFooter({
+          text: "Sistema desenvolvido para proteger nossa comunidade",
+        })
         .setTimestamp();
 
       await interaction.reply({ embeds: [antiraidEmbed], ephemeral: true });
@@ -241,7 +250,9 @@ client.on("interactionCreate", async (interaction) => {
   if (commands[commandName as keyof typeof commands]) {
     try {
       if (interaction.isChatInputCommand()) {
-        await commands[commandName as keyof typeof commands].execute(interaction);
+        await commands[commandName as keyof typeof commands].execute(
+          interaction
+        );
       }
     } catch (error) {
       Logger.error(`Erro ao executar comando ${commandName}: ${error}`);

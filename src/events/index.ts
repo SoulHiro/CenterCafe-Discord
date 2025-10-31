@@ -1,4 +1,1 @@
-export { handleGuildMemberAdd } from './guild-member-add';
-export { handleMention } from './mentioned-event';
-export { startScheduledMessages } from './scheduled-messages';
-export { handleKeywordResponder } from './keyword-responder';
+export { handleGuildMemberAdd } from "./guild-member-add";
