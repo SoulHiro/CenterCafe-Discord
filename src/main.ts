@@ -45,7 +45,7 @@ client.once("ready", async () => {
   };
   refreshPresence();
 
-  const channelId: string = "1424920316039139438";
+  const channelId: string = "1252789815192191036";
   const channel = await client.channels.fetch(channelId);
 
   const shouldSendStartup =
