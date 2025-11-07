@@ -8,7 +8,9 @@ export class EmbedUtils {
     return new EmbedBuilder()
       .setTitle("☕ Bem-vindo ao Center Café!")
       .setDescription(
-        `Olá **${username}**! Seja muito bem-vindo(a) ao nosso servidor! ☕\n\nAqui você encontrará uma comunidade acolhedora e cheia de boas conversas. Sinta-se à vontade para interagir e fazer novos amigos!`
+        `Olá **${username}**! É um prazer ter você aqui.  
+Aqui no Center Café criamos um ambiente acolhedor para estudar, conversar e fazer novas amizades.  
+Antes de começar, dê uma olhada nesses passos rápidos:`
       )
       .setColor(0x8b4513)
       .setThumbnail(
@@ -16,19 +18,16 @@ export class EmbedUtils {
       )
       .addFields(
         {
-          name: "📋 Regras",
-          value: "Leia nossas regras para uma convivência harmoniosa",
-          inline: true,
+          name: "📋 1. Leia as Regras",
+          value: `Para garantir uma boa convivência, confira: <#1061343818999414825>`,
         },
         {
-          name: "💬 Canais",
-          value: "Explore nossos canais e participe das conversas",
-          inline: true,
+          name: "🎨 2. Escolha sua Cor",
+          value: `Personalize seu perfil em: <#1061343818999414829>`,
         },
         {
-          name: "🎉 Diversão",
-          value: "Aproveite os jogos e atividades do servidor",
-          inline: true,
+          name: "👤 3. Apresente-se",
+          value: `Queremos te conhecer! Passe em: <#1069096204161527858>`,
         }
       )
       .setFooter({

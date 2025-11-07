@@ -1,4 +1,8 @@
-import { CommandInteraction, SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+import {
+  CommandInteraction,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+} from "discord.js";
 import { EmbedUtils } from "../utils/embeds";
 
 export const data = new SlashCommandBuilder()
@@ -40,7 +44,7 @@ export async function execute(interaction: CommandInteraction) {
     const embed = EmbedUtils.createWelcomeEmbed(target.username, memberCount);
 
     await interaction.reply({
-      content: `<@${target.id}>`,
+      content: `<@${target.id}> <@&1218655247166210069>`,
       embeds: [embed],
       ephemeral: true,
     });
